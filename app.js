@@ -63,16 +63,49 @@ app
     });
   });
 
-app.route("/articles/:articleTitle").get(function (req, res) {
-  const articleTitle = req.params.articleTitle;
-  Article.findOne({ title: articleTitle }, function (err, foundArticle) {
-    if (foundArticle) {
-      res.send(foundArticle);
-    } else {
-      res.send(`No articles match with ${articleTitle} as title`);
-    }
+app
+  .route("/articles/:articleTitle")
+  .get(function (req, res) {
+    Article.findOne(
+      { title: req.params.articleTitle },
+      function (err, foundArticle) {
+        if (foundArticle) {
+          res.send(foundArticle);
+        } else {
+          res.send(
+            `No articles match with ${req.params.articleTitle} as title`
+          );
+        }
+      }
+    );
+  })
+  .put(function (req, res) {
+    Article.replaceOne(
+      { title: req.params.articleTitle },
+      { title: req.body.title, content: req.body.content },
+      function (err) {
+        console.log(req.body.title, req.body.content);
+        if (!err) {
+          res.send("Successfully updated article");
+        } else {
+          res.send(err);
+        }
+      }
+    );
+  })
+  .patch(function (req, res) {
+    Article.findOneAndUpdate(
+      { title: req.params.articleTitle },
+      { $set: req.body },
+      function (err) {
+        if (!err) {
+          res.send("Successfully updated article");
+        } else {
+          res.send(err);
+        }
+      }
+    );
   });
-});
 
 app.listen(3000, function () {
   console.log("Server started on port 3000 🏁");
