@@ -99,12 +99,21 @@ app
       { $set: req.body },
       function (err) {
         if (!err) {
-          res.send("Successfully updated article");
+          res.send("Successfully edited article");
         } else {
           res.send(err);
         }
       }
     );
+  })
+  .delete(function (req, res) {
+    Article.deleteOne({ title: req.params.articleTitle }, function (err) {
+      if (!err) {
+        res.send("Successfully deleted article");
+      } else {
+        res.send(err);
+      }
+    });
   });
 
 app.listen(3000, function () {
